@@ -1,0 +1,15 @@
+import { chromium } from '@playwright/test';
+const out = process.argv[2];
+const url = 'file://' + process.cwd() + '/dist/index.html?e2e=1&seed=7';
+const browser = await chromium.launch({ channel: 'chrome' });
+const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+await page.goto(url + '#/setup');
+await page.getByTestId('name-input').fill('Atiye');
+await page.getByTestId('lang-hinglish').click();
+await page.getByTestId('create-profile').click();
+await page.goto(url + '#/maths/play?topics=addition&kind=count&n=2&label=x');
+await page.waitForTimeout(1800);
+await page.getByTestId('choice-' + 1).click().catch(() => {});
+await page.waitForTimeout(300);
+await page.screenshot({ path: `${out}/hinglish-count.png` });
+await browser.close();
